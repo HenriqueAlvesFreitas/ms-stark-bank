@@ -48,6 +48,6 @@ logging:
 
 app:
   starkbank:
-    private-key: ${STARKBANK_PRIVATE_KEY}
-    project-id: ${STARKBANK_PROJECT_ID}
-    env: ${STARKBANK_ENVIROMENT}
+    private-key: ${STARKBANK_PRIVATE_KEY:my-private-key}
+    project-id: ${STARKBANK_PROJECT_ID:my-project-id}
+    env: ${STARKBANK_ENVIROMENT:sandbox}

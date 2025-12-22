@@ -1,0 +1,53 @@
+## SPRING
+spring:
+  application:
+    name: stark-bank
+  springdoc:
+    show-actuator: true
+
+  dev-tools:
+    restart:
+      enabled: false
+    add-properties: false
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
+  #jwt:
+  #  secret: ${jwt.secret}
+## SERVER
+server:
+  port: 8080
+  forward-headers-strategy: framework
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, restart, debug
+  endpoint:
+    health:
+      show-details: always
+    restart:
+      enabled: true
+  server:
+    port: 8081
+
+# SPRINGDOC
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  level:
+    root: INFO
+    br:
+      com:
+        mills:
+          catalogo: DEBUG
+
+app:
+  starkbank:
+    private-key: ${STARKBANK_PRIVATE_KEY}
+    project-id: ${STARKBANK_PROJECT_ID}
+    env: ${STARKBANK_ENVIROMENT}

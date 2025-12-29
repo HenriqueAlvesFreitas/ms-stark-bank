@@ -1,45 +1,50 @@
 package br.com.stark_bank.application.service;
 
 import br.com.stark_bank.application.dtos.TransferDTO;
-import br.com.stark_bank.application.service.starkBank.EventService;
+import br.com.stark_bank.application.dtos.eventDTO.EventWrapperDTO;
 import br.com.stark_bank.infra.RestResponse;
 import br.com.stark_bank.application.service.starkBank.TransferService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.starkbank.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+@Slf4j
 @Service
 public class WebhookService {
 
     private final TransferService transferService;
-    private final EventService eventService;
 
     public WebhookService(
-            TransferService transferService,
-            EventService eventService) {
+            TransferService transferService) {
 
         this.transferService = transferService;
-        this.eventService = eventService;
     }
 
 
-    public ResponseEntity<RestResponse<Object>> save(String rawBody, String signature) {
+    public ResponseEntity<RestResponse<Object>> receiveEvent(EventWrapperDTO event) {
 
-        Event event = eventService.createEvent(rawBody, signature);
-        System.out.println(event);
+        log.info("ReceiveEvent: {}", event);
 
-        return RestResponse.success(rawBody, "Informação voltada com sucesso");
+        if(Objects.equals(event.getEvent().getLog().getType(), "credited")){
+            Long amount = event.getEvent().getLog().getInvoice().getNominalAmount() - event.getEvent().getLog().getInvoice().getDiscountAmount();
+
+            createTransfer(amount);
+        }
+
+        return RestResponse.success(event, "Information returned successfully");
 
     };
 
-    public void transfer(){
+    private void createTransfer(Long amount){
         List<TransferDTO> transferDTOList = new ArrayList<>();
 
         TransferDTO transferDTO = TransferDTO.builder()
-                .amount(1L)
+                .amount(amount)
                 .bankCode("20018183")
                 .branchCode("0001")
                 .accountNumber("6341320293482496")
@@ -54,7 +59,7 @@ public class WebhookService {
        List<Transfer> transferList = transferService.saveTransferList(transferDTOList);
 
         for (Transfer transfer : transferList){
-            System.out.println(transfer);
+            log.info("CreateTransfer: {}", transfer);
         }
     }
 

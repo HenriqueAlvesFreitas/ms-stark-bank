@@ -18,4 +18,15 @@ public class EventService {
             );
         }
     }
+
+    public Event getEvent(Event event){
+        try{
+            return Event.get(event.id);
+        }catch (Exception e){
+            throw new StarkBankException(
+                    "Error getting the event",
+                    e
+            );
+        }
+    }
 }

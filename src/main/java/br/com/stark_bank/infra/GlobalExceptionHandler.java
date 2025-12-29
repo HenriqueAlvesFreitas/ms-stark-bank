@@ -2,6 +2,9 @@ package br.com.stark_bank.infra;
 
 import br.com.stark_bank.application.enums.RestResponseStatus;
 import br.com.stark_bank.application.exceptions.StarkBankException;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -19,8 +22,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid( MethodArgumentNotValidException ex,
@@ -85,6 +91,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         trace.put("message", ex.getMessage());
         trace.put("payload", requestBody);
 
+        log.error("RunTimeException: {}", trace);
+
         return RestResponse.error(trace, "code error", HttpStatus.INTERNAL_SERVER_ERROR);
     };
 
@@ -94,6 +102,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         ResponseEntity<?> response = RestResponse.error(ex.getCause().getMessage(), ex.getMessage());
 
-        return RestResponse.error(ex.getCause().getMessage(), ex.getMessage());
+        log.error("StarkBankException: {}", response);
+
+        return response;
     }
 }

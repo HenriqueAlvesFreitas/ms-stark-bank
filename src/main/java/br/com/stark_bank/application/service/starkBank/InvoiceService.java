@@ -7,11 +7,14 @@ import br.com.stark_bank.application.port.StarkBankPort;
 import br.com.stark_bank.application.util.CPFGenerator;
 import br.com.stark_bank.application.util.NameGenerator;
 import com.starkbank.Invoice;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
+@Slf4j
 @Service
 public class InvoiceService {
 
@@ -52,9 +55,11 @@ public class InvoiceService {
         String cpf = CPFGenerator.randomCPF();
         rules.add(new Invoice.Rule("allowedTaxIds", new String[] {cpf}));
 
+        long amount = ThreadLocalRandom.current().nextLong(1, 1_000) * 100;
+
         InvoiceDTO invoiceDTO = InvoiceDTO.builder()
-                .amount(1L)
-                .due("2027-01-28T17:59:26.249976+00:00")
+                .amount(amount)
+                .due("2026-12-30T17:59:26.249976+00:00")
                 .name(NameGenerator.randomName())
                 .taxId(cpf)
                 .expiration(123456789L)
@@ -68,6 +73,6 @@ public class InvoiceService {
 
         List<Invoice> invoices = saveInvoiceList(invoiceDTOList);
 
-        System.out.println(invoices);
+        log.info("SaveSampleInvoice: {}", invoices);
     }
 }

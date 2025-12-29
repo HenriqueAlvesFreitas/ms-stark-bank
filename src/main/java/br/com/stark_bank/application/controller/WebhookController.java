@@ -1,5 +1,6 @@
 package br.com.stark_bank.application.controller;
 
+import br.com.stark_bank.application.dtos.eventDTO.EventWrapperDTO;
 import br.com.stark_bank.infra.RestResponse;
 import br.com.stark_bank.application.service.WebhookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +16,8 @@ public class WebhookController {
     WebhookService service;
 
     @PostMapping("/invoice")
-    public ResponseEntity<RestResponse<Object>> save(@RequestBody String rawBody,  @RequestHeader("Digital-Signature") String signature){
-        return service.save(rawBody, signature);
-    }
-
-    @GetMapping("/transfer")
-    public void transfer(){
-        service.transfer();
+    public ResponseEntity<RestResponse<Object>> receiveEvent(@RequestBody EventWrapperDTO event, @RequestHeader("Digital-Signature") String signature){
+        return service.receiveEvent(event);
     }
 
 }

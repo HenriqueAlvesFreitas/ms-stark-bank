@@ -11,7 +11,7 @@ public class InvoiceScheduler {
 
     private final InvoiceService invoiceService;
 
-    @Scheduled(fixedRate = 15 * 60 * 1000) // 15 minutes
+    @Scheduled(fixedRate = 15 * 60 * 1000)
     public void generateInvoices() {
         invoiceService.saveSampleInvoice();
     }

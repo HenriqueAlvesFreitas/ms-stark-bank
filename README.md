@@ -100,11 +100,28 @@ The **TransferService** encapsulates financial transfer operations.
 
 - The webhook **must respond quickly with HTTP 200**
 - Events may be resent by Stark Bank
-- The system must be **idempotent**
-- Never rely solely on synchronous responses from invoice or transfer creation
+
+### Error found
+- During testing of the SDK event parser, it was observed that the returned object did not contain the log property, causing the processing flow to be incomplete.
+- As a workaround, a custom DTO was implemented to correctly deserialize the event and extract the required data.
+
+### Parser returned value
+![Parser error](docs/event-parser.png)
 
 ---
 
 ## 📄 License
 
 Educational and experimental project.
+
+
+## Deployment Note
+
+The application has been deployed on an EC2 instance. However, since a custom domain has not been configured, it was not possible to generate an SSL certificate. As a result, HTTPS requests could not be made.
+
+![EC2 prove](docs/ec2-screen.png)
+
+This limitation affected the Stark Bank integration, as their API does not allow HTTP endpoints for webhooks or callbacks, requiring a secure HTTPS connection.
+
+
+![http failed](docs/http-failed.png)
